@@ -14,7 +14,6 @@ use serde::{
     de::{Deserialize, Deserializer},
     ser::{Serialize, Serializer},
 };
-use serde_json::Value;
 
 #[cfg(all(feature = "model", feature = "utils"))]
 use crate::builder::{CreateEmbed, EditMessage};
@@ -26,6 +25,7 @@ use crate::client::bridge::gateway::ShardMessenger;
 use crate::collector::{CollectReaction, ReactionCollectorBuilder};
 #[cfg(feature = "model")]
 use crate::http::{CacheHttp, Http};
+use crate::json::Value;
 #[cfg(feature = "unstable_discord_api")]
 use crate::model::interactions::MessageInteraction;
 use crate::model::prelude::*;
@@ -353,10 +353,8 @@ impl Message {
 
         let map = crate::utils::hashmap_to_json_map(builder.0);
 
-        *self = cache_http
-            .http()
-            .edit_message(self.channel_id.0, self.id.0, &Value::Object(map))
-            .await?;
+        *self =
+            cache_http.http().edit_message(self.channel_id.0, self.id.0, &Value::from(map)).await?;
 
         Ok(())
     }
@@ -780,10 +778,8 @@ impl Message {
 
         let map = crate::utils::hashmap_to_json_map(suppress.0);
 
-        *self = cache_http
-            .http()
-            .edit_message(self.channel_id.0, self.id.0, &Value::Object(map))
-            .await?;
+        *self =
+            cache_http.http().edit_message(self.channel_id.0, self.id.0, &Value::from(map)).await?;
 
         Ok(())
     }

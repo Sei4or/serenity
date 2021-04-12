@@ -1,6 +1,4 @@
 use futures::stream::Stream;
-#[cfg(feature = "model")]
-use serde_json::json;
 
 #[cfg(feature = "model")]
 use crate::builder::CreateChannel;
@@ -21,7 +19,8 @@ use crate::collector::{
 use crate::http::{CacheHttp, Http};
 #[cfg(feature = "model")]
 use crate::internal::prelude::*;
-use crate::model::prelude::*;
+#[cfg(feature = "model")]
+use crate::json::json;
 #[cfg(feature = "model")]
 use crate::utils;
 #[cfg(all(feature = "model", feature = "unstable_discord_api"))]
@@ -29,6 +28,7 @@ use crate::{
     builder::CreateInteraction,
     model::interactions::{ApplicationCommand, Interaction},
 };
+use crate::{json::prelude::*, model::prelude::*};
 
 #[cfg(feature = "model")]
 impl GuildId {
@@ -812,8 +812,8 @@ impl GuildId {
         user_id: impl Into<UserId>,
         channel_id: impl Into<ChannelId>,
     ) -> Result<Member> {
-        let mut map = Map::new();
-        map.insert("channel_id".to_string(), Value::Number(Number::from(channel_id.into().0)));
+        let mut map = JsonMap::new();
+        map.insert("channel_id".to_string(), from_number(channel_id.into().0));
 
         http.as_ref().edit_member(self.0, user_id.into().0, &map).await
     }
@@ -841,8 +841,8 @@ impl GuildId {
         http: impl AsRef<Http>,
         user_id: impl Into<UserId>,
     ) -> Result<Member> {
-        let mut map = Map::new();
-        map.insert("channel_id".to_string(), Value::Null);
+        let mut map = JsonMap::new();
+        map.insert("channel_id".to_string(), NULL);
         http.as_ref().edit_member(self.0, user_id.into().0, &map).await
     }
 

@@ -16,8 +16,8 @@ use super::Cache;
 /// Creating a custom struct implementation to update the cache with:
 ///
 /// ```rust,ignore
-/// use serde_json::json;
 /// use serenity::{
+///     json::json,    
 ///     cache::{Cache, CacheUpdate},
 ///     model::{
 ///         id::UserId,
